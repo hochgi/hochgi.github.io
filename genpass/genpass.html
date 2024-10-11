@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
+    input, select, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; }
+    .result { font-size: 1.2em; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Secure Password Generator</h1>
+  <form id="password-form" onsubmit="generatePassword(event)">
+    <input type="text" id="username" placeholder="Username/Login" required>
+    <input type="text" id="service" placeholder="Service Domain" required>
+    <input type="password" id="password" placeholder="Your Weak/Master Password" required>
+    <select id="algorithm">
+      <!-- Options populated via JS -->
+    </select>
+    <button type="submit">Generate Password</button>
+  </form>
+  <div class="result" id="result"></div>
+
+  <script>
+    // Populate hash algorithm options
+    const algorithms = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"]; // add any desired algorithms here
+    const algorithmSelect = document.getElementById('algorithm');
+    algorithms.forEach(algo => {
+      const option = document.createElement('option');
+      option.value = algo;
+      option.textContent = algo;
+      algorithmSelect.appendChild(option);
+    });
+    
+    async function generatePassword(event) {
+      event.preventDefault();
+      
+      // Collect form inputs
+      const user = document.getElementById('username').value;
+      const service = document.getElementById('service').value;
+      const password = document.getElementById('password').value;
+      const algorithm = document.getElementById('algorithm').value;
+      const combinedString = `${user}:${password}@${service}`;
+      
+      // Encode combinedString to a Uint8Array
+      const encoder = new TextEncoder();
+      const data = encoder.encode(combinedString);
+      
+      // Hash the combined data
+      const hashBuffer = await crypto.subtle.digest(algorithm, data);
+      
+      // Convert hash to hex
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      // Convert to base64 format for password
+      const base64String = btoa(hashHex.match(/.{1,2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join(''));
+      const transformedPassword = base64String.replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '');
+      
+      // Show first few characters as a hint and copy full password to clipboard
+      const visiblePart = transformedPassword.slice(0, 5) + '...';
+      document.getElementById('result').textContent = `Generated Password: ${visiblePart} (copied to clipboard)`;
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(transformedPassword)
+        .then(() => console.log('Password copied to clipboard!'))
+        .catch(err => console.error('Failed to copy password to clipboard', err));
+    }
+  </script>
+</body>
+</html>
