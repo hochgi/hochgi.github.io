@@ -8,21 +8,97 @@
     body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; margin-top: 50px; }
     input, select, button { padding: 10px; margin: 5px 0; width: 100%; max-width: 300px; }
     .result { font-size: 1.2em; margin-top: 20px; }
+    .gist-data { height:250px; overflow-y: visible; }
   </style>
 </head>
 <body>
   <h1>Secure Password Generator</h1>
-  <form id="password-form" onsubmit="generatePassword(event)">
+  <form id="password-form" onsubmit="generatePassword(event)" style="width: 740px;">
     <input type="text" id="username" placeholder="Username/Login" required>
     <input type="text" id="service" placeholder="Service Domain" required>
-    <input type="password" id="password" placeholder="Your Weak/Master Password" required>
-    <select id="algorithm">
-      <!-- Options populated via JS -->
-    </select>
+    <input type="password" id="password" placeholder="Your Master Password" required>
+    <select id="algorithm"></select>
     <button type="submit">Generate Password</button>
+    <span style="font-size: 85%;color: #c0c0c0">(tested on chrome - might not work for other browsers)</span>
   </form>
-  <div class="result" id="result"></div>
-
+  <br><br>
+  <div class="result" id="result" style="width: 740px;"></div>
+  <br><br>
+<div style="width: 740px;">
+  <h2 style="text-align: center;">What is it for?</h2>
+  <p>
+    To easily have unique strong passwords for different services.
+  </p>
+  <h3 style="text-align: center;">Why?</h3>
+  <p>
+    We shouldn't reuse the same password in different services.
+    There's too many breaches, and too many shady services storing your password in plain text.
+    You can check if any of your passwords has been pwned <a href="https://haveibeenpwned.com/Passwords">here</a>.
+    If one reuses their password, a hacker can (and will) easily use that password to log into more sensitive services (e.g. your bank account).
+  </p>
+  <h3 style="text-align: center;">How?</h3>
+  <p>
+    OK, so a different password per service…
+    <br>
+    but how can one keep track of all their different passwords?
+  </p>
+  <p>
+    You could rely on external password management services like
+     <a href="https://1password.com/">1password</a>, 
+     <a href="https://nordpass.com/">nordpass</a>, 
+     <a href="https://lastpass.com/">lastpass</a>, etc'…
+  </p>
+  <p>
+    But…
+    <br>
+    If you don't like to rely on a 3rd party services to always be available whenever you need it (no service has 100% uptime), 
+    or prefer not to pay for it, or just too paranoid to trust it, then you can rely on a password generator instead of a password manager.
+  </p>
+  <p>
+    With a password generator, you can have one master password, which you never use directly - but be able to generate different passwords for different services with it.
+  </p>
+  <h3 style="text-align: center;">What exactly is a "password generator"?</h3>
+  <p>A password generator is a small program you run <b>locally</b> without anything communicated to any 3rd party service.</p>
+  <p>
+    to verify this little web app does not communicate anything to the outside world, you can open the developers tools' network tab, 
+    and see no requests are being made when the form is filled or submitted.
+  </p>
+  <img src="/img/network.png"/>
+  <p>
+    <b>TL;DR:</b><br> we just <a href="https://en.wikipedia.org/wiki/Hash_function">hash</a> all inputs together: <pre style="text-align: center;">hash($username ++ $service ++ $master_password)</pre>
+    Meaning, for different usernames, and different services, even the same password yields a different unique password.
+  </p>
+  <p>
+    Originally, I created a simple bash script to do that, which worked great, but was not really useable from non-pc machines like mobile phones.
+    That's why I created this little page, allowing for simple password generation "everywhere".
+  </p>
+  <p>
+    You can freely copy the original bash script to use if you want:
+  </p>
+  <div>
+    <script src="https://gist.github.com/hochgi/afe3b6a2ae604e85590a3729e25efd33/00f8d8806449f195f9439ce2d40bbbbc32c1081a.js"></script>
+  </div>
+  <h3 style="text-align: center;">Use responsibly</h3>
+  <p>
+    Good passwords should have enough bits of entropy, as we can learn from <a href="https://xkcd.com/936/">this xkcd oldie</a>:
+  </p>
+  <img src="https://imgs.xkcd.com/comics/password_strength.png"/>
+  <p>
+    This is especially true when choosing a master password for a password generator.
+    Brute force attacks against services are often mitigated by rate limiting, and limited attempts.
+    But a simple hach function which anyone can run locally is prone to brute force attacks.
+    If an attacker get's hold of one of your unique hashed passwords, and guesses you might be using this password generator,
+    they can easily brute force known/short passwords, and if unfourtunately you use such a password, 
+    they now get match against hash, and infer your master password.
+    <br>
+    If that happens, they can now use same generator to generate passwords to more sensitive services you might be using.
+  </p>
+  <p>
+    So, if you're considering a dumb easily type-able password to use as your master password, I have one thing to say to you: 
+  </p>
+  <div style="text-align: center;"><img src="https://i.imgflip.com/96j3vq.jpg" title="don't!"/></div>
+</div>
+  
   <script>
     // Populate hash algorithm options
     const algorithms = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"]; // add any desired algorithms here
