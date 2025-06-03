@@ -22,7 +22,7 @@
     <label for="add-salt" style="width: auto; margin-left: 0;">Add salting?</label>
     <input type="text" id="salt" placeholder="Enter salt" style="display: none;"><br>
     <button type="submit">Generate Password</button>
-    <span style="font-size: 85%;color: #c0c0c0">(tested on chrome - might not work for other browsers)</span>
+    <span style="font-size: 85%;color: #c0c0c0">(Tested on Chrome - might not work in other browsers.)</span>
   </form>
   <br><br>
   <div class="result" id="result" style="width: 740px;"></div>
@@ -35,9 +35,9 @@
   <h3 style="text-align: center;">Why?</h3>
   <p>
     We shouldn't reuse the same password in different services.
-    There's too many breaches, and too many shady services storing your password in plain text.
+    There are too many breaches and too many shady services storing your passwords in plain text.
     You can check if any of your passwords has been pwned <a href="https://haveibeenpwned.com/Passwords">here</a>.
-    If one reuses their password, a hacker can (and will) easily use that password to log into more sensitive services (e.g. your bank account).
+    If one reuses their password, a hacker can (and often will) easily use that password to log into more sensitive services (e.g., your bank account).
   </p>
   <h3 style="text-align: center;">How?</h3>
   <p>
@@ -49,13 +49,12 @@
     You could rely on external password management services like
      <a href="https://1password.com/">1password</a>, 
      <a href="https://nordpass.com/">nordpass</a>, 
-     <a href="https://lastpass.com/">lastpass</a>, etc'…
+     <a href="https://lastpass.com/">lastpass</a>, etc'&hellip;
   </p>
   <p>
     But…
     <br>
-    If you don't like to rely on a 3rd party services to always be available whenever you need it (no service has 100% uptime), 
-    or prefer not to pay for it, or just too paranoid to trust it, then you can rely on a password generator instead of a password manager.
+    If you don't like to rely on third-party services to always be available whenever you need them (no service has 100% uptime), prefer not to pay for them, or are just too paranoid to trust them, then you can rely on a password generator instead of a password manager.
   </p>
   <p>
     With a password generator, you can have one master password, which you never use directly - but be able to generate different passwords for different services with it.
@@ -63,16 +62,15 @@
   <h3 style="text-align: center;">What exactly is a "password generator"?</h3>
   <p>A password generator is a small program you run <b>locally</b> without anything communicated to any 3rd party service.</p>
   <p>
-    to verify this little web app does not communicate anything to the outside world, you can open the developers tools' network tab, 
-    and see no requests are being made when the form is filled or submitted.
+    To verify this little web app does not communicate anything to the outside world, you can open the developer tools' network tab and see that no requests are made when the form is filled or submitted.
   </p>
   <img src="/img/network.png"/>
   <p>
     <b>TL;DR:</b><br> we just <a href="https://en.wikipedia.org/wiki/Hash_function">hash</a> all inputs together: <pre style="text-align: center;">hash($username ++ $service ++ $master_password)</pre>
-    Meaning, for different usernames, and different services, even the same password yields a different unique password.
+    Meaning, for different usernames and different services, even the same master password yields a different, unique password.
   </p>
   <p>
-    Originally, I created a simple bash script to do that, which worked great, but was not really useable from non-pc machines like mobile phones.
+    Originally, I created a simple bash script to do that, which worked great but was not really usable from non-PC machines like mobile phones.
     That's why I created this little page, allowing for simple password generation "everywhere".
   </p>
   <p>
@@ -89,17 +87,26 @@
   <p>
     This is especially true when choosing a master password for a password generator.
     Brute force attacks against services are often mitigated by rate limiting, and limited attempts.
-    But a simple hach function which anyone can run locally is prone to brute force attacks.
-    If an attacker get's hold of one of your unique hashed passwords, and guesses you might be using this password generator,
-    they can easily brute force known/short passwords, and if unfourtunately you use such a password, 
-    they now get match against hash, and infer your master password.
+    But a simple hash function that anyone can run locally is prone to brute-force attacks.
+    If an attacker gets hold of one of your unique hashed passwords and guesses you might be using this password generator, they can easily brute-force known/short passwords. If, unfortunately, you use such a master password, they can match it against the hash and infer your master password.
     <br>
     If that happens, they can now use same generator to generate passwords to more sensitive services you might be using.
   </p>
   <p>
-    So, if you're considering a dumb easily type-able password to use as your master password, I have one thing to say to you: 
+    So, if you're considering using a dumb, easily typeable password as your master password, I have one thing to say to you: 
   </p>
   <div style="text-align: center;"><img src="https://i.imgflip.com/96j3vq.jpg" title="don't!"/></div>
+
+  <h3 style="text-align: center;">A Note on Browser State and Security</h3>
+  <p>
+    If you suspect that this browser tab might have been tampered with (e.g., if you left your computer unattended with this tab open), or if you have any doubts about the current state of the page, it is a good practice to perform a <strong>hard refresh</strong> before entering your master password.
+  </p>
+  <p>
+    A hard refresh (often <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> on macOS, or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> or <kbd>Ctrl</kbd>+<kbd>F5</kbd> on Windows/Linux) helps ensure that you are running the freshest version of the page's code directly from the server (or local file). This clears out many types of scripts or modifications that might have been temporarily injected into the page during the current session (e.g., via the developer console).
+  </p>
+  <p>
+    While this doesn't guard against all sophisticated attacks (like compromised browser extensions or operating system level threats), it adds a valuable layer of caution for the security of this tool when used in potentially untrusted browser states.
+  </p>
 </div>
   
   <script>
