@@ -160,6 +160,13 @@
       navigator.clipboard.writeText(transformedPassword)
         .then(() => console.log('Password copied to clipboard!'))
         .catch(err => console.error('Failed to copy password to clipboard', err));
+
+      // Clear the master password field by replacing it
+      const oldPasswordInput = document.getElementById('password');
+      const newPasswordInput = oldPasswordInput.cloneNode(false); // Clone without children and value
+      // oldPasswordInput.id = ''; // Optional: clear ID of old node if it causes issues, though it will be removed from DOM
+      newPasswordInput.value = ''; // Explicitly ensure value is empty
+      oldPasswordInput.parentNode.replaceChild(newPasswordInput, oldPasswordInput);
     }
   </script>
 </body>
