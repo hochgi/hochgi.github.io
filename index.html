@@ -17,7 +17,10 @@
     <input type="text" id="username" placeholder="Username/Login" required>
     <input type="text" id="service" placeholder="Service Domain" required>
     <input type="password" id="password" placeholder="Your Master Password" required>
-    <select id="algorithm"></select>
+    <select id="algorithm"></select><br>
+    <input type="checkbox" id="add-salt" style="margin-left: 5px; width: auto;">
+    <label for="add-salt" style="width: auto; margin-left: 0;">Add salting?</label>
+    <input type="text" id="salt" placeholder="Enter salt" style="display: none;"><br>
     <button type="submit">Generate Password</button>
     <span style="font-size: 85%;color: #c0c0c0">(tested on chrome - might not work for other browsers)</span>
   </form>
@@ -110,6 +113,17 @@
       algorithmSelect.appendChild(option);
     });
     
+    const saltCheckbox = document.getElementById('add-salt');
+    const saltInput = document.getElementById('salt');
+
+    saltCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        saltInput.style.display = 'block';
+      } else {
+        saltInput.style.display = 'none';
+      }
+    });
+    
     async function generatePassword(event) {
       event.preventDefault();
       
@@ -118,7 +132,10 @@
       const service = document.getElementById('service').value;
       const password = document.getElementById('password').value;
       const algorithm = document.getElementById('algorithm').value;
-      const combinedString = `${user}:${password}@${service}`;
+      const saltCheckbox = document.getElementById('add-salt');
+      const saltValue = document.getElementById('salt').value;
+      const saltedPassword = (saltCheckbox.checked && saltValue.length > 0) ? `${saltValue}:${password}` : password;
+      const combinedString = `${user}:${saltedPassword}@${service}`;
       
       // Encode combinedString to a Uint8Array
       const encoder = new TextEncoder();
