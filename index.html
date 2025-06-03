@@ -18,7 +18,7 @@
     <input type="text" id="service" placeholder="Service Domain" required>
     <input type="password" id="password" placeholder="Your Master Password" required>
     <select id="algorithm"></select><br>
-    <input type="checkbox" id="add-salt" style="margin-left: 5px; width: auto;">
+    <input type="checkbox" id="add-salt" style="margin-left: 5px; width: auto;" title="Use this if a service requires you to change your password periodically (e.g., every 90 days). Adding a salt (like 'Q1-2024' or 'version2') will generate a new unique password even with the same master password, username, and service.">
     <label for="add-salt" style="width: auto; margin-left: 0;">Add salting?</label>
     <input type="text" id="salt" placeholder="Enter salt" style="display: none;"><br>
     <button type="submit">Generate Password</button>
